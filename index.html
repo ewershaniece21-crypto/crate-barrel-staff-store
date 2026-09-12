@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crate & Barrel Staff Store</title>
+<style>
+:root{
+  --brown:#1769e0;--brown2:#0d47b5;--cream:#eef6ff;--paper:#ffffff;--tan:#d7e9ff;
+  --gold:#5b8def;--ink:#10233f;--muted:#5d7090;--line:#cfe0f5;--good:#1f8f5f;
+  --warn:#a66b00;--bad:#bd3c4b;--shadow:0 12px 34px rgba(23,105,224,.13)
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f7faff;color:var(--ink)}
+button,input,select,textarea{font:inherit} button{cursor:pointer}
+.hidden{display:none!important}.wrap{max-width:1180px;margin:auto;padding:0 18px}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0}
+.brand{display:flex;align-items:center;gap:12px}.brandmark{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#1769e0,#69a8ff);color:#fff;display:grid;place-items:center;font-family:Georgia,serif;font-weight:700}
+.brand h1{font:700 20px Georgia,serif;margin:0}.brand small,.muted{color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:800}
+.btn-dark{background:#1673ee;color:#fff}.btn-primary{background:#1673ee;color:#fff}.btn-light{background:#e3efff;color:var(--ink)}
+.btn-good{background:#e9f7f0;color:var(--good)}.btn-bad{background:#fdecef;color:var(--bad)}
+.hero{margin:26px 0 18px;background:linear-gradient(135deg,#4fb3ff 0%,#8fd0ff 55%,#dcecff 100%);color:#000;border-radius:26px;padding:34px;min-height:290px;display:flex;align-items:center;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.hero:after{content:"";position:absolute;right:-70px;top:-85px;width:320px;height:460px;background:rgba(255,255,255,.48);transform:rotate(14deg)}
+.hero-inner{position:relative;z-index:1;max-width:760px}.eyebrow{letter-spacing:2px;font-size:12px;font-weight:900;margin-bottom:12px;color:#000}
+.hero h2{font:500 58px/0.95 Georgia,serif;margin:0 0 20px;color:#000}.hero p{font-size:18px;margin:0 0 22px;color:#000;font-weight:700}
+.notice{border-radius:12px;padding:12px 14px;font-size:13px;margin:14px 0}.notice.info{background:#f3f8ff;border:1px solid #cfe0f5}.notice.warn{background:#fff6dc;border:1px solid #f0d38a;color:#6c4b00}
+.controls{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}.search{flex:1;min-width:230px}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:var(--paper);color:var(--ink)}
+.filter{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:9px 13px}.filter.active{background:#1673ee;color:#fff;border-color:#1673ee}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;padding-bottom:36px}.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 7px 22px rgba(37,91,156,.10);display:flex;flex-direction:column}
+.photo{height:250px;background:#f3f6fa;display:grid;place-items:center;overflow:hidden;position:relative;cursor:zoom-in}.photo img{width:100%;height:100%;object-fit:contain;padding:10px;transition:transform .2s}.photo:hover img{transform:scale(1.02)}.emoji{font-size:72px}
+.cardbody{padding:16px;display:flex;flex-direction:column;gap:10px;flex:1}.topline{display:flex;justify-content:space-between;gap:10px}.topline h3{font:700 18px Georgia,serif;margin:0}.price{font-weight:900;color:#0d5ecf;white-space:nowrap}
+.stocklow{color:var(--warn);font-weight:800}.stockout{color:var(--bad);font-weight:800}label{font-size:12px;color:var(--muted);font-weight:800;display:block;margin-bottom:4px}
+.qty{display:flex;gap:7px;align-items:center}.qty button{width:34px;height:34px;border:1px solid var(--line);background:var(--paper);border-radius:9px}.qty input{width:62px;text-align:center;padding:7px}
+.add{margin-top:auto;width:100%;border:0;background:linear-gradient(135deg,#1673ee,#2a91ff);color:#fff;border-radius:11px;padding:12px;font-weight:900}.add:disabled{opacity:.45}
+.drawer{position:fixed;right:0;top:0;width:min(460px,100%);height:100%;background:var(--paper);z-index:45;box-shadow:-12px 0 35px rgba(0,0,0,.18);transform:translateX(102%);transition:.25s;overflow:auto}.drawer.open{transform:none}
+.drawerhead{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--line);padding:17px 18px;display:flex;justify-content:space-between;align-items:center;z-index:2}.drawerbody{padding:18px}
+.cartitem,.ordercard{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}.cartitem{display:flex;justify-content:space-between;gap:10px}
+.admin{padding:25px 0 45px}.adminhead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.adminhead h2{font:700 32px Georgia,serif;margin:0}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0}.kpi,.box{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:15px;box-shadow:var(--shadow)}.kpi .n{font-size:26px;font-weight:900}.kpi .t{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.tab{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:9px 13px;font-weight:800}.tab.active{background:var(--brown);color:#fff}
+.panel{display:none}.panel.active{display:block}.adminlayout{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}
+.adminproduct{display:grid;grid-template-columns:70px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.adminproduct:last-child{border-bottom:0}.thumb{width:70px;height:70px;border-radius:11px;background:#e7f1ff;display:grid;place-items:center;overflow:hidden}.thumb img{width:100%;height:100%;object-fit:cover}
+.smallactions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.smallbtn{border:0;border-radius:9px;padding:8px 10px;font-size:12px;font-weight:800}
+.orderhead{display:flex;justify-content:space-between;gap:10px}.badge{font-size:12px;font-weight:900;border-radius:999px;padding:6px 9px}.pending{background:#fff3c7;color:#7a5200}.approved{background:#e7f6ef;color:var(--good)}.rejected{background:#fdecef;color:var(--bad)}.orderitems{margin:9px 0 0;padding-left:18px}.logrow{padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.modal{position:fixed;inset:0;background:rgba(27,17,13,.58);z-index:60;display:none;align-items:center;justify-content:center;padding:18px}.modal.open{display:flex}.modalbox{background:var(--paper);border-radius:18px;padding:18px;width:min(650px,100%);max-height:92vh;overflow:auto;box-shadow:0 24px 70px rgba(0,0,0,.25)}.modalhead{display:flex;justify-content:space-between;align-items:center}.modalhead h3{margin:0}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.preview{height:180px;border-radius:13px;background:#e7f1ff;display:grid;place-items:center;overflow:hidden;margin-bottom:10px}.preview img{width:100%;height:100%;object-fit:contain}
+.loginbox{max-width:420px;margin:70px auto;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.statusbar{font-size:12px;color:var(--muted);margin:8px 0 0}
+
+.zoom-badge{
+  position:absolute;right:10px;bottom:10px;width:38px;height:38px;border-radius:50%;
+  background:rgba(20,35,55,.72);color:#fff;display:grid;place-items:center;font-size:20px;
+  box-shadow:0 4px 12px rgba(0,0,0,.18);pointer-events:none
+}
+.image-lightbox{
+  position:fixed;inset:0;background:rgba(10,20,35,.72);z-index:80;display:none;
+  align-items:center;justify-content:center;padding:20px
+}
+.image-lightbox.open{display:flex}
+.image-lightbox-card{
+  width:min(900px,96vw);max-height:92vh;background:#fff;border-radius:20px;
+  padding:18px;box-shadow:0 25px 80px rgba(0,0,0,.32);display:flex;flex-direction:column
+}
+.image-lightbox-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+.image-lightbox-head h3{margin:0;font:700 22px Georgia,serif}
+.image-lightbox-stage{
+  min-height:340px;max-height:72vh;background:#f5f7fa;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;overflow:auto
+}
+.image-lightbox-stage img{max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain}
+
+@media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}.adminlayout{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.hero h2{font-size:44px}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.adminproduct{grid-template-columns:60px 1fr}.smallactions{grid-column:1/-1;justify-content:flex-start}.hero h2{font-size:38px}.wrap{padding:0 13px}}
+</style>
+</head>
+<body>
+<header><div class="wrap topbar">
+<div class="brand"><div class="brandmark">CB</div><div><h1>Crate & Barrel Staff Store</h1><small id="subtitle">Staff storefront</small></div></div>
+<div class="actions"><button class="btn btn-light" id="adminToggle" onclick="enterAdmin()">Admin</button><button class="btn btn-dark" id="cartButton" onclick="toggleCart(true)">Your Order (<span id="cartCount">0</span>)</button></div>
+</div></header>
+
+<main class="wrap">
+<section id="storeView">
+<section class="hero"><div class="hero-inner"><div class="eyebrow">EMPLOYEE EXCLUSIVE</div><h2>Crate &amp; Barrel<br>Staff Store</h2><p>Results delivered. Rewards unlocked.</p><button class="btn btn-light" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Explore Your Rewards →</button></div></section>
+<div class="notice info"><b>How it works:</b> Submit your order based on availability, wait for manager approval, then collect and purchase your items.</div>
+<div class="notice warn"><b>Please note:</b> submitting an order does not reduce stock. Inventory changes only after manager approval.</div>
+<div class="controls" id="products">
+<input id="search" class="search" placeholder="Search items…" oninput="renderStore()">
+<button class="filter active" onclick="setCategory('All',this)">All</button>
+<button class="filter" onclick="setCategory('Bags',this)">Bags</button>
+<button class="filter" onclick="setCategory('Drinkware',this)">Drinkware</button>
+<button class="filter" onclick="setCategory('Home',this)">Home</button>
+<button class="filter" onclick="setCategory('Other',this)">Other</button>
+</div>
+<div id="productGrid" class="grid"></div>
+</section>
+
+<section id="adminLogin" class="hidden">
+<div class="loginbox"><h2>Admin Access</h2><p class="muted">Enter the shared manager code.</p><label>Manager Code</label><input id="adminPinInput" type="password" inputmode="numeric" maxlength="4" placeholder="4-digit code"><button class="btn btn-dark" style="width:100%;margin-top:10px" onclick="loginAdmin()">Sign In</button><div id="loginStatus" class="statusbar"></div></div>
+</section>
+
+<section id="adminView" class="admin hidden">
+<div class="adminhead"><div><h2>Store Admin</h2><div class="muted">Manage products, stock, orders and activity.</div></div><div class="actions"><button class="btn btn-primary" onclick="openProductModal()">+ Add Product</button><button class="btn btn-light" onclick="logoutAdmin()">Exit Admin</button></div></div>
+<div class="kpis">
+<div class="kpi"><div id="kpiProducts" class="n">0</div><div class="t">Products</div></div>
+<div class="kpi"><div id="kpiUnits" class="n">0</div><div class="t">Units in stock</div></div>
+<div class="kpi"><div id="kpiLow" class="n">0</div><div class="t">Low stock</div></div>
+<div class="kpi"><div id="kpiPending" class="n">0</div><div class="t">Pending orders</div></div>
+<div class="kpi"><div id="kpiApproved" class="n">0</div><div class="t">Approved orders</div></div>
+</div>
+<div class="tabs">
+<button class="tab active" onclick="showTab('productsPanel',this)">Products & Inventory</button>
+<button class="tab" onclick="showTab('ordersPanel',this)">Orders</button>
+<button class="tab" onclick="showTab('activityPanel',this)">Activity</button>
+<button class="tab" onclick="showTab('settingsPanel',this)">Settings</button>
+</div>
+
+<div id="productsPanel" class="panel active"><div class="adminlayout">
+<div class="box"><h3>Products</h3><div id="adminProducts"></div></div>
+<div class="box"><h3>Quick Stock Update</h3><label>Product</label><select id="quickProduct"></select><label style="margin-top:10px">Action</label><select id="quickAction"><option value="add">Add stock</option><option value="remove">Remove stock</option><option value="set">Set exact stock</option></select><label style="margin-top:10px">Amount</label><input id="quickAmount" type="number" min="0" value="1"><button class="btn btn-dark" style="width:100%;margin-top:10px" onclick="quickStock()">Update Stock</button></div>
+</div></div>
+
+<div id="ordersPanel" class="panel"><div class="box"><div class="actions" style="justify-content:space-between"><h3 style="margin:0">Orders</h3><select id="orderFilter" style="width:auto" onchange="renderOrders()"><option>All</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></div><div id="ordersList" style="margin-top:14px"></div></div></div>
+<div id="activityPanel" class="panel"><div class="box"><h3>Activity History</h3><div id="activityList"></div></div></div>
+<div id="settingsPanel" class="panel"><div class="box" style="max-width:680px">
+<h3>Admin Settings</h3>
+<h4>Manager Code</h4><p class="muted">Change the shared 4-digit code used to enter Admin.</p>
+<div class="formgrid"><div><label>Current code</label><input id="oldManagerCode" type="password" inputmode="numeric" maxlength="4"></div><div><label>New 4-digit code</label><input id="newManagerCode" type="password" inputmode="numeric" maxlength="4"></div></div>
+<button class="btn btn-dark" onclick="changeManagerCode()">Change Manager Code</button>
+<hr><h4>Export Data</h4><div class="actions"><button class="btn btn-light" onclick="exportOrders()">Export Orders CSV</button><button class="btn btn-light" onclick="exportInventory()">Export Inventory CSV</button><button class="btn btn-light" onclick="exportActivity()">Export Activity CSV</button></div>
+</div></div>
+</section>
+</main>
+
+<aside id="cartDrawer" class="drawer"><div class="drawerhead"><h2 style="margin:0">Your Order</h2><button class="btn btn-light" onclick="toggleCart(false)">Close</button></div><div class="drawerbody"><div id="cartItems"></div><hr><form onsubmit="submitOrder(event)"><div class="formgrid"><div><label>Agent Name</label><input id="agentName" required></div><div><label>Team Lead</label><input id="teamLead" required></div></div><label style="margin-top:10px">Notes</label><textarea id="notes" rows="3" placeholder="Optional"></textarea><button class="btn btn-dark" style="width:100%;margin-top:10px">Submit Order</button></form></div></aside>
+
+<div id="productModal" class="modal"><div class="modalbox">
+<div class="modalhead"><h3 id="productModalTitle">Add Product</h3><button class="btn btn-light" onclick="closeProductModal()">Close</button></div>
+<input id="editId" type="hidden"><input id="existingImageUrl" type="hidden">
+<div id="imagePreview" class="preview"><span class="emoji">🛍️</span></div>
+<label>Product image</label><input id="productImage" type="file" accept="image/*" onchange="previewImage(event)">
+<div class="formgrid"><div><label>Product name</label><input id="productName"></div><div><label>Category</label><select id="productCategory"><option>Bags</option><option>Drinkware</option><option>Home</option><option>Other</option></select></div></div>
+<div class="formgrid"><div><label>Price (J$)</label><input id="productPrice" type="number" min="0" step="1"></div><div><label>Current stock</label><input id="productStock" type="number" min="0" value="0"></div></div>
+<label>Available colours</label><input id="productColors" placeholder="Black, Blue, Purple">
+<div class="formgrid"><div><label>Low stock alert at</label><input id="lowStockAt" type="number" min="0" value="5"></div><div><label>Visible in storefront</label><select id="productActive"><option value="true">Yes</option><option value="false">No</option></select></div></div>
+<button class="btn btn-primary" style="margin-top:14px" onclick="saveProduct()">Save Product</button>
+</div></div>
+
+<div id="confirmModal" class="modal"><div class="modalbox" style="max-width:520px"><div class="modalhead"><h3>Approve Order</h3><button class="btn btn-light" onclick="closeConfirm()">Close</button></div><div id="confirmBody"></div><div class="notice warn"><b>Stock will be deducted when you click Approved.</b></div><div class="actions"><button class="btn btn-light" onclick="closeConfirm()">Cancel</button><button class="btn btn-primary" id="confirmApproveBtn">Approved</button></div></div></div>
+
+
+<div id="imageLightbox" class="image-lightbox" onclick="if(event.target===this) closeImageLightbox()">
+  <div class="image-lightbox-card">
+    <div class="image-lightbox-head">
+      <h3 id="imageLightboxTitle">Product Image</h3>
+      <button class="btn btn-light" onclick="closeImageLightbox()">Close</button>
+    </div>
+    <div class="image-lightbox-stage">
+      <img id="imageLightboxImg" alt="">
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL="https://pyujtdyxzmzermzysbpr.supabase.co";
+const SUPABASE_KEY="sb_publishable_pULDAAxuhTjx19EmM2ElJA_vnYExAo0";
+const API=SUPABASE_URL+"/rest/v1";
+let products=[],orders=[],activity=[],cart=[],category="All",managerCode="",pendingApprovalId=null,previewObjectUrl="";
+
+function headers(extra={}){return {"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,...extra}}
+async function api(path,opts={}){
+  const r=await fetch(API+path,{...opts,headers:headers(opts.headers||{})});
+  const text=await r.text(); let data=text?JSON.parse(text):null;
+  if(!r.ok) throw new Error(data?.message||data?.error||text||("Request failed "+r.status));
+  return data;
+}
+async function rpc(name,body){
+  return api("/rpc/"+name,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+
+function openImageLightbox(id){
+  const p=products.find(x=>x.id===id);
+  if(!p||!p.image_url)return;
+  imageLightboxTitle.textContent=p.name||"Product Image";
+  imageLightboxImg.src=p.image_url;
+  imageLightboxImg.alt=p.name||"Product image";
+  imageLightbox.classList.add("open");
+}
+function closeImageLightbox(){
+  imageLightbox.classList.remove("open");
+  imageLightboxImg.src="";
+}
+function money(n){const x=Number(n);return Number.isFinite(x)?new Intl.NumberFormat("en-JM",{style:"currency",currency:"JMD",maximumFractionDigits:0}).format(x):"Price TBA"}
+function stockLabel(p){if(p.stock<=0)return '<span class="stockout">Out of stock</span>';if(p.stock<=p.low_stock_at)return `<span class="stocklow">${p.stock} left</span>`;return `${p.stock} available`}
+function statusClass(s){return String(s||"").toLowerCase()}
+async function loadProducts(){
+  products=await api("/products?select=*&order=created_at.desc");
+  renderStore(); if(managerCode) renderAdmin();
+}
+function renderStore(){
+  const q=(search.value||"").toLowerCase().trim(); productGrid.innerHTML="";
+  products.filter(p=>p.active&&(category==="All"||p.category===category)&&String(p.name).toLowerCase().includes(q)).forEach(p=>{
+    const photo=p.image_url?`<img src="${esc(p.image_url)}" alt="${esc(p.name)}"><span class="zoom-badge">⌕</span>`:`<span class="emoji">🛍️</span>`;
+    const colors=(p.colors?.length?p.colors:["Default"]).map(c=>`<option>${esc(c)}</option>`).join("");
+    productGrid.innerHTML+=`<article class="card"><div class="photo" ${p.image_url?`onclick="openImageLightbox(${p.id})"`:""}>${photo}</div><div class="cardbody"><div class="topline"><h3>${esc(p.name)}</h3><div class="price">${money(p.price)}</div></div><div class="muted">${stockLabel(p)}</div><div><label>Colour</label><select id="color-${p.id}">${colors}</select></div><div><label>Quantity</label><div class="qty"><button type="button" onclick="stepQty(${p.id},-1)">−</button><input id="qty-${p.id}" type="number" min="1" max="${Math.max(1,p.stock)}" value="1"><button type="button" onclick="stepQty(${p.id},1)">+</button></div></div><button class="add" ${p.stock<=0?"disabled":""} onclick="addToCart(${p.id})">${p.stock<=0?"Out of Stock":"Add to Order"}</button></div></article>`;
+  });
+  if(!productGrid.innerHTML) productGrid.innerHTML='<p class="muted">No products are available yet.</p>';
+}
+function setCategory(c,btn){category=c;document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));btn.classList.add("active");renderStore()}
+function stepQty(id,d){const p=products.find(x=>x.id===id),el=document.getElementById(`qty-${id}`);el.value=Math.max(1,Math.min(p.stock,(+el.value||1)+d))}
+function addToCart(id){const p=products.find(x=>x.id===id),color=document.getElementById(`color-${id}`).value,qty=+document.getElementById(`qty-${id}`).value||1;const ex=cart.find(x=>x.id===id&&x.color===color),already=ex?ex.qty:0;if(already+qty>p.stock)return alert("That quantity is above available stock.");if(ex)ex.qty+=qty;else cart.push({id,name:p.name,color,qty});renderCart();toggleCart(true)}
+function renderCart(){cartCount.textContent=cart.reduce((a,b)=>a+b.qty,0);cartItems.innerHTML=cart.length?cart.map((x,i)=>`<div class="cartitem"><div><b>${esc(x.name)}</b><br><span class="muted">${esc(x.color)} • Qty ${x.qty}</span></div><button class="btn btn-bad" onclick="cart.splice(${i},1);renderCart()">Remove</button></div>`).join(""):'<p class="muted">No items added yet.</p>'}
+function toggleCart(open){cartDrawer.classList.toggle("open",open)}
+async function submitOrder(e){
+  e.preventDefault();if(!cart.length)return alert("Add at least one item.");
+  try{
+    const items=cart.map(x=>({product_id:x.id,color:x.color,quantity:x.qty}));
+    const orderId=await rpc("submit_staff_order",{p_agent_name:agentName.value.trim(),p_team_lead:teamLead.value.trim(),p_notes:notes.value.trim(),p_items:items});
+    cart=[];renderCart();toggleCart(false);e.target.reset();await loadProducts();alert(`Order #${orderId} submitted for manager approval. Stock has NOT been reduced.`);
+  }catch(err){alert(err.message)}
+}
+
+function enterAdmin(){storeView.classList.add("hidden");cartButton.classList.add("hidden");adminLogin.classList.remove("hidden");subtitle.textContent="Admin access";loginStatus.textContent=""}
+async function loginAdmin(){
+  const code=adminPinInput.value.trim(); if(!/^\d{4}$/.test(code))return alert("Enter the 4-digit manager code.");
+  loginStatus.textContent="Checking…";
+  try{
+    const ok=await rpc("check_manager_code",{p_code:code});
+    if(!ok){loginStatus.textContent="";return alert("Incorrect manager code.");}
+    managerCode=code;adminPinInput.value="";adminLogin.classList.add("hidden");adminView.classList.remove("hidden");adminToggle.classList.add("hidden");subtitle.textContent="Admin dashboard";
+    await Promise.all([loadProducts(),loadOrders(),loadActivity()]);renderAdmin();
+  }catch(err){loginStatus.textContent="";alert(err.message)}
+}
+function logoutAdmin(){managerCode="";adminView.classList.add("hidden");storeView.classList.remove("hidden");cartButton.classList.remove("hidden");adminToggle.classList.remove("hidden");subtitle.textContent="Staff storefront";loadProducts()}
+function showTab(id,btn){document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));btn.classList.add("active")}
+async function loadOrders(){orders=await rpc("admin_get_orders",{p_code:managerCode})||[]}
+async function loadActivity(){activity=await rpc("admin_get_activity",{p_code:managerCode})||[]}
+function renderAdmin(){
+  kpiProducts.textContent=products.length;kpiUnits.textContent=products.reduce((a,p)=>a+(+p.stock||0),0);kpiLow.textContent=products.filter(p=>p.stock>0&&p.stock<=p.low_stock_at).length;kpiPending.textContent=orders.filter(o=>statusClass(o.status)==="pending").length;kpiApproved.textContent=orders.filter(o=>statusClass(o.status)==="approved").length;
+  adminProducts.innerHTML=products.length?products.map(p=>`<div class="adminproduct"><div class="thumb">${p.image_url?`<img src="${esc(p.image_url)}">`:"🛍️"}</div><div><b>${esc(p.name)}</b><div class="muted">${esc(p.category)} • ${money(p.price)} • Stock ${p.stock} ${p.active?"":"• Hidden"}</div></div><div class="smallactions"><button class="smallbtn btn-light" onclick="openProductModal(${p.id})">Edit</button><button class="smallbtn btn-good" onclick="adjustStock(${p.id},1)">+1</button><button class="smallbtn btn-light" onclick="adjustStock(${p.id},-1)">−1</button><button class="smallbtn btn-bad" onclick="toggleVisible(${p.id})">${p.active?"Hide":"Show"}</button></div></div>`).join(""):'<p class="muted">No products yet.</p>';
+  quickProduct.innerHTML=products.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");
+  renderOrders();
+  activityList.innerHTML=activity.length?activity.map(a=>`<div class="logrow"><b>${new Date(a.created_at).toLocaleString()}</b><br>${esc(a.action)}${a.details?` — ${esc(a.details)}`:""}</div>`).join(""):'<p class="muted">No activity yet.</p>';
+}
+function renderOrders(){
+  const f=orderFilter.value.toLowerCase(); const list=orders.filter(o=>f==="all"||statusClass(o.status)===f);
+  ordersList.innerHTML=list.length?list.map(o=>`<div class="ordercard"><div class="orderhead"><div><b>Order #${o.id}</b><div class="muted">${new Date(o.submitted_at).toLocaleString()}</div></div><span class="badge ${statusClass(o.status)}">${esc(String(o.status).toUpperCase())}</span></div><div class="muted" style="margin-top:6px"><b>Name:</b> ${esc(o.agent_name)} &nbsp; • &nbsp; <b>Team Lead:</b> ${esc(o.team_lead)}</div><ul class="orderitems">${(o.items||[]).map(i=>`<li>${esc(i.product_name)} — ${esc(i.color||"Default")} — Qty ${i.quantity}</li>`).join("")}</ul>${o.notes?`<div class="muted"><b>Note:</b> ${esc(o.notes)}</div>`:""}${statusClass(o.status)==="pending"?`<div class="actions" style="margin-top:10px"><button class="btn btn-good" onclick="reviewApproval(${o.id})">Approved</button><button class="btn btn-bad" onclick="rejectOrder(${o.id})">Reject</button></div>`:""}</div>`).join(""):'<p class="muted">No matching orders.</p>';
+}
+function reviewApproval(id){const o=orders.find(x=>x.id===id);pendingApprovalId=id;confirmBody.innerHTML=`<p><b>Order #${o.id}</b> for ${esc(o.agent_name)}</p><ul>${(o.items||[]).map(i=>`<li>${esc(i.product_name)} — ${esc(i.color||"Default")} — Qty ${i.quantity}</li>`).join("")}</ul>`;confirmApproveBtn.onclick=approveOrder;confirmModal.classList.add("open")}
+function closeConfirm(){confirmModal.classList.remove("open");pendingApprovalId=null}
+async function approveOrder(){
+  try{await rpc("admin_approve_order",{p_code:managerCode,p_order_id:pendingApprovalId});closeConfirm();await Promise.all([loadProducts(),loadOrders(),loadActivity()]);renderAdmin();alert("Order approved. Stock has been deducted.");}catch(err){closeConfirm();alert(err.message)}
+}
+async function rejectOrder(id){if(!confirm("Reject this order? Stock will remain unchanged."))return;try{await rpc("admin_reject_order",{p_code:managerCode,p_order_id:id});await Promise.all([loadOrders(),loadActivity()]);renderAdmin();alert("Order rejected. Stock was not changed.");}catch(err){alert(err.message)}}
+async function updateProductRecord(p){return rpc("admin_update_product",{p_code:managerCode,p_id:p.id,p_name:p.name,p_category:p.category,p_price:Number(p.price)||0,p_colors:p.colors||[],p_stock:Number(p.stock)||0,p_low_stock_at:Number(p.low_stock_at)||0,p_active:!!p.active,p_image_url:p.image_url||""})}
+async function adjustStock(id,d){const p=products.find(x=>x.id===id);if(!p)return;p.stock=Math.max(0,Number(p.stock)+d);try{await updateProductRecord(p);await Promise.all([loadProducts(),loadActivity()]);renderAdmin()}catch(err){alert(err.message)}}
+async function quickStock(){const p=products.find(x=>x.id===+quickProduct.value);if(!p)return;const amt=Math.max(0,+quickAmount.value||0);if(quickAction.value==="add")p.stock+=amt;else if(quickAction.value==="remove")p.stock=Math.max(0,p.stock-amt);else p.stock=amt;try{await updateProductRecord(p);await Promise.all([loadProducts(),loadActivity()]);renderAdmin()}catch(err){alert(err.message)}}
+async function toggleVisible(id){const p=products.find(x=>x.id===id);if(!p)return;p.active=!p.active;try{await updateProductRecord(p);await Promise.all([loadProducts(),loadActivity()]);renderAdmin()}catch(err){alert(err.message)}}
+
+function openProductModal(id=null){
+  productImage.value=""; if(previewObjectUrl){URL.revokeObjectURL(previewObjectUrl);previewObjectUrl=""}
+  if(id){const p=products.find(x=>x.id===id);editId.value=id;existingImageUrl.value=p.image_url||"";productModalTitle.textContent="Edit Product";productName.value=p.name;productCategory.value=p.category||"Other";productPrice.value=Number(p.price)||0;productStock.value=p.stock||0;productColors.value=(p.colors||[]).join(", ");lowStockAt.value=p.low_stock_at||0;productActive.value=String(!!p.active);imagePreview.innerHTML=p.image_url?`<img src="${esc(p.image_url)}">`:'<span class="emoji">🛍️</span>'}
+  else{editId.value="";existingImageUrl.value="";productModalTitle.textContent="Add Product";productName.value="";productCategory.value="Bags";productPrice.value="";productStock.value=0;productColors.value="";lowStockAt.value=5;productActive.value="true";imagePreview.innerHTML='<span class="emoji">🛍️</span>'}
+  productModal.classList.add("open")
+}
+function closeProductModal(){productModal.classList.remove("open")}
+function previewImage(e){const f=e.target.files[0];if(!f)return;if(previewObjectUrl)URL.revokeObjectURL(previewObjectUrl);previewObjectUrl=URL.createObjectURL(f);imagePreview.innerHTML=`<img src="${previewObjectUrl}">`}
+async function uploadImage(file){
+  const ext=(file.name.split(".").pop()||"jpg").replace(/[^a-zA-Z0-9]/g,"");
+  const path=`products/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const r=await fetch(`${SUPABASE_URL}/storage/v1/object/product-images/${path}`,{method:"POST",headers:headers({"Content-Type":file.type||"application/octet-stream","x-upsert":"false"}),body:file});
+  if(!r.ok){const t=await r.text();throw new Error(t||"Image upload failed.");}
+  return `${SUPABASE_URL}/storage/v1/object/public/product-images/${path}`;
+}
+async function saveProduct(){
+  const name=productName.value.trim();if(!name)return alert("Enter a product name.");
+  try{
+    let imageUrl=existingImageUrl.value||"";
+    const file=productImage.files[0]; if(file) imageUrl=await uploadImage(file);
+    const data={name,category:productCategory.value,price:Number(productPrice.value)||0,colors:productColors.value.split(",").map(x=>x.trim()).filter(Boolean),stock:Math.max(0,+productStock.value||0),low_stock_at:Math.max(0,+lowStockAt.value||0),active:productActive.value==="true",image_url:imageUrl};
+    if(editId.value){await rpc("admin_update_product",{p_code:managerCode,p_id:+editId.value,p_name:data.name,p_category:data.category,p_price:data.price,p_colors:data.colors,p_stock:data.stock,p_low_stock_at:data.low_stock_at,p_active:data.active,p_image_url:data.image_url});}
+    else{await rpc("admin_add_product",{p_code:managerCode,p_name:data.name,p_category:data.category,p_price:data.price,p_colors:data.colors,p_stock:data.stock,p_low_stock_at:data.low_stock_at,p_active:data.active,p_image_url:data.image_url});}
+    closeProductModal();await Promise.all([loadProducts(),loadActivity()]);renderAdmin();alert("Product saved.");
+  }catch(err){alert(err.message)}
+}
+async function changeManagerCode(){
+  const oldc=oldManagerCode.value.trim(),newc=newManagerCode.value.trim();if(!/^\d{4}$/.test(newc))return alert("The new manager code must be exactly 4 digits.");
+  try{await rpc("admin_change_manager_code",{p_old_code:oldc,p_new_code:newc});managerCode=newc;oldManagerCode.value="";newManagerCode.value="";alert("Manager code changed.");}catch(err){alert(err.message)}
+}
+function csvDownload(filename,rows){const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;const csv=rows.map(r=>r.map(q).join(",")).join("\n");const b=new Blob([csv],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function exportOrders(){const rows=[["Order ID","Submitted","Agent Name","Team Lead","Product","Colour","Quantity","Status"]];orders.forEach(o=>(o.items||[]).forEach(i=>rows.push([o.id,o.submitted_at,o.agent_name,o.team_lead,i.product_name,i.color,i.quantity,o.status])));csvDownload("crate-barrel-orders.csv",rows)}
+function exportInventory(){const rows=[["Product ID","Product","Category","Price JMD","Colours","Stock","Low Stock At","Visible","Image URL"]];products.forEach(p=>rows.push([p.id,p.name,p.category,p.price,(p.colors||[]).join(" | "),p.stock,p.low_stock_at,p.active?"Yes":"No",p.image_url||""]));csvDownload("crate-barrel-inventory.csv",rows)}
+function exportActivity(){const rows=[["Time","Action","Reference","Details"]];activity.forEach(a=>rows.push([a.created_at,a.action,a.reference,a.details]));csvDownload("crate-barrel-activity.csv",rows)}
+
+renderCart();loadProducts().catch(err=>{productGrid.innerHTML=`<p class="stockout">Could not load products: ${esc(err.message)}</p>`});
+</script>
+</body>
+</html>
